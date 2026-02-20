@@ -77,14 +77,20 @@ public class DispatchSystem {
         scanner.close();
     }
 
+    /**
+     * Adds a new incident to the queue based on user input.
+     * The user is prompted to enter the incident type, district, and priority.
+     * High priority incidents are added to the front of the queue, while normal priority incidents are added to the end.
+     * The incident type is also tracked in a set for today's incidents.
+     */
     private void addIncident(){
         System.out.println("\n--- Enter Incident Details ---");
 
         System.out.print("Enter incident type (e.g., fire, medical, security): ");
-        String type = scanner.nextLine().toUpperCase().trim();
+        String type = scanner.nextLine().toLowerCase().trim();
 
         System.out.print("Enter district (e.g. central, south, east): ");
-        String district = scanner.nextLine().toUpperCase().trim();
+        String district = scanner.nextLine().toLowerCase().trim();
 
         int priority = -1;
         while(priority != 0 && priority != 1){
@@ -105,11 +111,45 @@ public class DispatchSystem {
             System.out.println("Normal priority incident added to the end of the queue.");
         } else {
             incidentQueue.addFirst(newIncident);
-            System.out.println("High priority incident added to the end of the queue.");
+            System.out.println("High priority incident added to the start of the queue.");
         }
         todayIncidentTypes.add(type);
     }
 
+    /**
+     * Displays all incidents currently in the queue.
+     * If the queue is empty, a message is shown indicating that there are no incidents.
+     */
+    private void viewIncidents(){
+        System.out.println("\n--- Current Incidents in Queue ---");
+        if(incidentQueue.isEmpty()){
+            System.out.println("No incidents in the queue.");
+            return;
+        } else {
+            for(Incident incident : incidentQueue){
+                System.out.println(incident.toString());
+            }
+        }
+    }
+
+    /**
+     * Displays the unique incident types that have been reported today.
+     * If no incidents have been reported, a message is shown indicating that there are no incident types to display.
+     */
+    private void dispatchIncident(){
+        System.out.println("\n--- Dispatching Next Incident ---");
+        if(incidentQueue.isEmpty()){
+            System.out.println("No incidents to dispatch.");
+            return;
+        } else {
+            Incident dispatechedIncident = incidentQueue.pollFirst();
+            System.out.println("Dispatched: " + dispatechedIncident.toString() + "to emergency services.");
+        }
+    }
+
+    /**
+     * Starts the application by creating an instance of the Dispatch System
+     */
     public static void main(String[] args) {
         DispatchSystem system = new DispatchSystem();
         system.start();
