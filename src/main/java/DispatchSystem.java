@@ -38,7 +38,7 @@ public class DispatchSystem {
         while(running){
             System.out.println("\n--- Ramstropolis Emergency Dispatch ---" +
                     "\n1. Enter new incident" +
-                    "\2. View all incidents on queue" +
+                    "\n2. View all incidents on queue" +
                     "\n3. Dispatch next incident" +
                     "\n4. View unique incident types today" +
                     "\n5. Search incidents" +
@@ -75,5 +75,10 @@ public class DispatchSystem {
             }
         }
         scanner.close();
+    }
+
+    public static void main(String[] args) {
+        DispatchSystem system = new DispatchSystem();
+        system.start();
     }
 }
