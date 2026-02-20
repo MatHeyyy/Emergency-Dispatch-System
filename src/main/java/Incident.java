@@ -54,6 +54,6 @@ public class Incident{
     @Override
     public String toString(){
         String priorityLevel = (priority == 1) ? "High" : "Normal";
-        return String.format("Incident Type: %s, District: %s, Priority: %s]", type, district, priorityLevel);
+        return String.format("Incident [Type: %s, District: %s, Priority: %s]", type, district, priorityLevel);
     }
 }
