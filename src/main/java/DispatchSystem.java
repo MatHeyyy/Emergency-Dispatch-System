@@ -143,7 +143,7 @@ public class DispatchSystem {
             return;
         } else {
             Incident dispatechedIncident = incidentQueue.pollFirst();
-            System.out.println("Dispatched: " + dispatechedIncident.toString() + "to emergency services.");
+            System.out.println("Dispatched: " + dispatechedIncident.toString() + " to emergency services.");
         }
     }
 
@@ -161,6 +161,58 @@ public class DispatchSystem {
                 System.out.println("- " + type);
             }
         }
+    }
+
+    /**
+     * Allows the user to search for incidents in the queue based on a search term.
+     * The search term can match either the incident type or the district.
+     * If no incidents match the search term, a message is shown indicating that no incidents were found.
+     */
+    private void searchIncidents(){
+        System.out.println("\n--- Search Incidents ---");
+        if(incidentQueue.isEmpty()){
+            System.out.println("No incidents in the queue to search.");
+            return;
+        } else{
+            System.out.print("Enter search term (type or district): ");
+            String searchTerm = scanner.nextLine().toLowerCase().trim();
+            boolean found = false;
+            for(Incident incident : incidentQueue){
+                if(incident.getType().contains(searchTerm) || incident.getDistrict().contains(searchTerm)){
+                    System.out.println(incident.toString());
+                    found = true;
+                }
+            }
+            if(!found){
+                System.out.println("No incidents found matching the search term: " + searchTerm);
+            }
+        }
+    }
+
+    /**
+     * Runs a trend analysis comparing today's incident types with yesterday's incident types.
+     * It calculates and displays the union, intersection, and difference of the two sets of incident types.
+     */
+    private void runTrendAnalysis(){
+        System.out.println("\n--- Trend Analysis ---" +
+                "\nToday's Types: " + todayIncidentTypes +
+                "\nYesterday's Types: " + yesterdayIncidentTypes +
+                "\n------------------------------------");
+
+        //Union
+        Set<String> unionSet = new HashSet<>(todayIncidentTypes);
+        unionSet.addAll(yesterdayIncidentTypes);
+        System.out.println("Union of today's and yesterday's incident types: " + unionSet);
+
+        //Intersection
+        Set<String> intersectionSet = new HashSet<>(todayIncidentTypes);
+        intersectionSet.retainAll(yesterdayIncidentTypes);
+        System.out.println("Intersection of today's and yesterday's incident types: " + intersectionSet);
+
+        //Difference
+        Set<String> differenceSet = new HashSet<>(todayIncidentTypes);
+        differenceSet.removeAll(yesterdayIncidentTypes);
+        System.out.println("Incident types reported today but not yesterday: " + differenceSet);
     }
 
     /**
