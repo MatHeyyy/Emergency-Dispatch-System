@@ -46,4 +46,14 @@ public class Incident{
     public int getPriority() {
         return priority;
     }
+
+    /**
+     * Overrides the toString method to provide a string representation of the incident
+     * @return string representation of the incident
+     */
+    @Override
+    public String toString(){
+        String priorityLevel = (priority == 1) ? "High" : "Normal";
+        return String.format("Incident [Type: %s, District: %s, Priority: %s]", type, district, priorityLevel);
+    }
 }
