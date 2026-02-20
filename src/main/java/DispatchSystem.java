@@ -77,6 +77,39 @@ public class DispatchSystem {
         scanner.close();
     }
 
+    private void addIncident(){
+        System.out.println("\n--- Enter Incident Details ---");
+
+        System.out.print("Enter incident type (e.g., fire, medical, security): ");
+        String type = scanner.nextLine().toUpperCase().trim();
+
+        System.out.print("Enter district (e.g. central, south, east): ");
+        String district = scanner.nextLine().toUpperCase().trim();
+
+        int priority = -1;
+        while(priority != 0 && priority != 1){
+            System.out.print("Enter priority (0 for normal, 1 for high): ");
+            try {
+                priority = Integer.parseInt(scanner.nextLine().trim());
+                if(priority != 0 && priority != 1){
+                    System.out.println("Invalid priority. Please enter 0 or 1.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number (0 or 1).");
+            }
+        }
+
+        Incident newIncident = new Incident(type, district, priority);
+        if(priority == 0){
+            incidentQueue.addLast(newIncident);
+            System.out.println("Normal priority incident added to the end of the queue.");
+        } else {
+            incidentQueue.addFirst(newIncident);
+            System.out.println("High priority incident added to the end of the queue.");
+        }
+        todayIncidentTypes.add(type);
+    }
+
     public static void main(String[] args) {
         DispatchSystem system = new DispatchSystem();
         system.start();
