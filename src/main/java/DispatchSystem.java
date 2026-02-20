@@ -133,8 +133,8 @@ public class DispatchSystem {
     }
 
     /**
-     * Displays the unique incident types that have been reported today.
-     * If no incidents have been reported, a message is shown indicating that there are no incident types to display.
+     * Dispatches the next incident in the queue to emergency services.
+     * If the queue is empty, a message is shown indicating that there are no incidents to dispatch.
      */
     private void dispatchIncident(){
         System.out.println("\n--- Dispatching Next Incident ---");
@@ -144,6 +144,22 @@ public class DispatchSystem {
         } else {
             Incident dispatechedIncident = incidentQueue.pollFirst();
             System.out.println("Dispatched: " + dispatechedIncident.toString() + "to emergency services.");
+        }
+    }
+
+    /**
+     * Displays the unique incident types that have been reported today.
+     * If no incidents have been reported, a message is shown indicating that there are no incident types to display.
+     */
+    private void viewUniqueIncidentTypes(){
+        System.out.println("\n--- Unique Incident Types Reported Today ---");
+        if(todayIncidentTypes.isEmpty()){
+            System.out.println("No incident types reported today.");
+            return;
+        } else {
+            for(String type : todayIncidentTypes){
+                System.out.println("- " + type);
+            }
         }
     }
 
