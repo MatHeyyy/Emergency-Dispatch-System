@@ -125,6 +125,7 @@ public class DispatchSystem {
             }
         }
 
+        districtQueues.putIfAbsent(district, new ArrayDeque<>());
         Incident newIncident = new Incident(type, district, priority);
         if(priority == 0){
             districtQueues.get(district).addLast(newIncident);
@@ -168,19 +169,15 @@ public class DispatchSystem {
      */
     private void dispatchIncident(){
         System.out.println("\n--- Dispatching Next Incident ---");
-        boolean empty = true;
-        for(Map.Entry<String, Deque<Incident>> entry : districtQueues.entrySet()){
-            String district = entry.getKey();
-            Deque<Incident> queue = entry.getValue();
-            if(!queue.isEmpty()){
-                empty = false;
-                Incident dispatechedIncident = queue.pollFirst();
-                System.out.println("Dispatched: " + dispatechedIncident.toString() + " from " + district + " district to emergency services.");
-                return;
-            }
-        }
-        if(empty){
-            System.out.println("No incidents to dispatch.");
+        System.out.print("Enter district to dispatch from (e.g. central, south, east): ");
+        String district = scanner.nextLine().toLowerCase().trim();
+        Deque<Incident> queue = districtQueues.get(district);
+        if(queue == null || queue.isEmpty()){
+            System.out.println("No incidents to dispatch in the " + district + " district.");
+        } else {
+            Incident incidentToDispatch = queue.pollFirst();
+            System.out.println("Dispatching incident: " + incidentToDispatch.toString());
+            incidentLog.add(incidentToDispatch);
         }
     }
 
