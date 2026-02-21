@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
@@ -8,7 +9,7 @@ import java.util.UUID;
  * @version 1.0
  */
 
-public class Incident{
+public class Incident implements Serializable {
     private String type;
     private String district;
     private int priority;
