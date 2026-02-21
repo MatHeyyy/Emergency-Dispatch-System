@@ -71,15 +71,26 @@ public class Incident{
         return timeRecorded;
     }
 
+    /**
+     * Gets the wait time in seconds since the incident was recorded
+     * @return wait time in seconds since the incident was recorded
+     */
+    public long getWaitTimeInSeconds(){
+        return Duration.between(timeRecorded, Instant.now()).getSeconds();
+    }
+
     //---- Methods ----
 
     /**
-     * Overrides the toString method to provide a string representation of the incident
+     * Returns a string representation of the incident, including its ID, time recorded, wait time, type, district, and priority level.
+     * The priority level is displayed as "High" for priority 1 and "Normal" for priority 0.
      * @return string representation of the incident
      */
     @Override
     public String toString(){
         String priorityLevel = (priority == 1) ? "High" : "Normal";
-        return String.format("Incident [Type: %s, District: %s, Priority: %s]", type, district, priorityLevel);
+        return String.format("[ID: %s | Time: %s | Wait: %ds | Type: %s, District: %s, Priority: %s]",
+                id.toString().substring(0, 8), timeRecorded.toString(), getWaitTimeInSeconds(),
+                type, district, priorityLevel);
     }
 }
