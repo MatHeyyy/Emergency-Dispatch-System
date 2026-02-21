@@ -3,6 +3,11 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Scanner;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 /**
  * Core management system for the Emergency Dispatch System.
@@ -32,6 +37,8 @@ public class DispatchSystem {
         yesterdayIncidentTypes.add("security");
     }
 
+    // --- Main Loop and Menu System ---
+
     /**
      * Starts the main loop of the dispatch system, allowing users to interact with the system through a menu-driven interface.
      */
@@ -46,6 +53,8 @@ public class DispatchSystem {
                     "\n5. Search incidents" +
                     "\n6. Run trend analysis" +
                     "\n7. View system log" +
+                    "\n8. Save system state" +
+                    "\n9. Load system state" +
                     "\n0. Exit");
             System.out.print("Select an option: ");
 
@@ -71,6 +80,12 @@ public class DispatchSystem {
                     break;
                 case "7":
                     incidentLog.display();
+                    break;
+                case "8":
+                    saveState();
+                    break;
+                case "9":
+                    loadState();
                     break;
                 case "0":
                     running = false;
@@ -220,6 +235,41 @@ public class DispatchSystem {
         Set<String> differenceSet = new HashSet<>(todayIncidentTypes);
         differenceSet.removeAll(yesterdayIncidentTypes);
         System.out.println("Incident types reported today but not yesterday: " + differenceSet);
+    }
+
+    /**
+     * Saves the current state of the system to a file using serialization.
+     * The incident queue, today's incident types, yesterday's incident types, and the incident log are all saved to a file named "dispatch_data.dat".
+     * If an error occurs during the saving process, an error message is displayed.
+     */
+    private void saveState(){
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("dispatch_data.dat"))){
+            oos.writeObject(incidentQueue);
+            oos.writeObject(todayIncidentTypes);
+            oos.writeObject(yesterdayIncidentTypes);
+            oos.writeObject(incidentLog);
+            System.out.println("System state saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving system state: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Loads the state of the system from a file using deserialization.
+     * The incident queue, today's incident types, yesterday's incident types, and the incident log are all loaded from a file named "dispatch_data.dat".
+     * If an error occurs during the loading process, an error message is displayed.
+     */
+    @SuppressWarnings("unchecked")
+    private void loadState(){
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("dispatch_data.dat"))){
+            incidentQueue = (Deque<Incident>) ois.readObject();
+            todayIncidentTypes = (Set<String>) ois.readObject();
+            yesterdayIncidentTypes = (Set<String>) ois.readObject();
+            incidentLog = (SystemLog<Incident>) ois.readObject();
+            System.out.println("System state loaded successfully.");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error loading system state: " + e.getMessage());
+        }
     }
 
     /**

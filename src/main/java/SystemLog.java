@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * @author Matei Costinescu
  * @version 1.0
  */
-public class SystemLog<T> {
+public class SystemLog<T> implements Serializable {
     private List<T> logItems;
 
     /**
