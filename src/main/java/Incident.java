@@ -1,3 +1,7 @@
+import java.time.Duration;
+import java.time.Instant;
+import java.util.UUID;
+
 /**
  * This class holds data about incidents in emergency calls
  * @author Matei Costinescu
@@ -8,6 +12,8 @@ public class Incident{
     private String type;
     private String district;
     private int priority;
+    private UUID id;
+    private Instant timeRecorded;
 
     /**
      * Constructor for the Incident class
@@ -16,12 +22,14 @@ public class Incident{
      * @param priority
      */
     public Incident(String type, String district, int priority){
+        this.id = UUID.randomUUID();
+        this.timeRecorded = Instant.now();
         this.type = type;
         this.district = district;
         this.priority = priority;
     }
 
-    // Getters for the Incident class
+    // --- Getters ---
 
     /**
      * Gets the type of the incident
@@ -46,6 +54,24 @@ public class Incident{
     public int getPriority() {
         return priority;
     }
+
+    /**
+     * Gets the unique identifier of the incident
+     * @return unique identifier of the incident
+     */
+    public UUID getId() {
+        return id;
+    }
+
+    /**
+     * Gets the time when the incident was recorded
+     * @return time when the incident was recorded
+     */
+    public Instant getTimeRecorded() {
+        return timeRecorded;
+    }
+
+    //---- Methods ----
 
     /**
      * Overrides the toString method to provide a string representation of the incident
