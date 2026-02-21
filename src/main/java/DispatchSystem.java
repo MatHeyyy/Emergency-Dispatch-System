@@ -15,7 +15,7 @@ public class DispatchSystem {
     private Map<String, Deque<Incident>> districtQueues;
     private Set<String> todayIncidentTypes;
     private Set<String> yesterdayIncidentTypes;
-    private Scanner scanner;
+    private final Scanner scanner;
     private SystemLog<Incident> incidentLog;
 
     /**
@@ -189,7 +189,6 @@ public class DispatchSystem {
         System.out.println("\n--- Unique Incident Types Reported Today ---");
         if(todayIncidentTypes.isEmpty()){
             System.out.println("No incident types reported today.");
-            return;
         } else {
             for(String type : todayIncidentTypes){
                 System.out.println("- " + type);
@@ -211,7 +210,7 @@ public class DispatchSystem {
             Deque<Incident> queue = entry.getValue();
             for(Incident incident : queue){
                 if(incident.getType().contains(searchTerm) || incident.getDistrict().contains(searchTerm)){
-                    System.out.println(incident.toString());
+                    System.out.println(incident);
                     found = true;
                 }
             }
@@ -285,7 +284,7 @@ public class DispatchSystem {
     /**
      * Starts the application by creating an instance of the Dispatch System
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
         DispatchSystem system = new DispatchSystem();
         system.start();
     }
