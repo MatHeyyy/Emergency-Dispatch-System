@@ -264,6 +264,7 @@ public class DispatchSystem {
         try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("dispatch_data.dat"))){
             incidentQueue = (Deque<Incident>) ois.readObject();
             todayIncidentTypes = (Set<String>) ois.readObject();
+            yesterdayIncidentTypes = (Set<String>) ois.readObject();
             incidentLog = (SystemLog<Incident>) ois.readObject();
             System.out.println("System state loaded successfully.");
         } catch (IOException | ClassNotFoundException e) {
