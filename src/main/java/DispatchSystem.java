@@ -15,6 +15,7 @@ public class DispatchSystem {
     private Set<String> todayIncidentTypes;
     private Set<String> yesterdayIncidentTypes;
     private Scanner scanner;
+    private SystemLog<Incident> incidentLog;
 
     /**
      * Constructor for the DispatchSystem class. Initializes the incident queue, sets for tracking incident types, and the scanner for user input.
@@ -24,6 +25,7 @@ public class DispatchSystem {
         this.todayIncidentTypes = new HashSet<>();
         this.yesterdayIncidentTypes = new HashSet<>();
         this.scanner = new Scanner(System.in);
+        this.incidentLog = new SystemLog<>();
 
         yesterdayIncidentTypes.add("fire");
         yesterdayIncidentTypes.add("medical");
@@ -43,6 +45,7 @@ public class DispatchSystem {
                     "\n4. View unique incident types today" +
                     "\n5. Search incidents" +
                     "\n6. Run trend analysis" +
+                    "\n7. View system log" +
                     "\n0. Exit");
             System.out.print("Select an option: ");
 
@@ -65,6 +68,9 @@ public class DispatchSystem {
                     break;
                 case "6":
                     runTrendAnalysis();
+                    break;
+                case "7":
+                    incidentLog.display();
                     break;
                 case "0":
                     running = false;
@@ -114,6 +120,7 @@ public class DispatchSystem {
             System.out.println("High priority incident added to the start of the queue.");
         }
         todayIncidentTypes.add(type);
+        incidentLog.add(newIncident);
     }
 
     /**
