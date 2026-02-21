@@ -53,6 +53,8 @@ public class DispatchSystem {
                     "\n5. Search incidents" +
                     "\n6. Run trend analysis" +
                     "\n7. View system log" +
+                    "\n8. Save system state" +
+                    "\n9. Load system state" +
                     "\n0. Exit");
             System.out.print("Select an option: ");
 
@@ -78,6 +80,12 @@ public class DispatchSystem {
                     break;
                 case "7":
                     incidentLog.display();
+                    break;
+                case "8":
+                    saveState();
+                    break;
+                case "9":
+                    loadState();
                     break;
                 case "0":
                     running = false;
