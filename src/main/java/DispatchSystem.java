@@ -1,8 +1,4 @@
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Scanner;
+import java.util.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -16,17 +12,20 @@ import java.io.IOException;
  * @version: 1.0
  */
 public class DispatchSystem {
-    private Deque<Incident> incidentQueue;
+    private Map<String, Deque<Incident>> districtQueues;
     private Set<String> todayIncidentTypes;
     private Set<String> yesterdayIncidentTypes;
     private Scanner scanner;
     private SystemLog<Incident> incidentLog;
 
     /**
-     * Constructor for the DispatchSystem class. Initializes the incident queue, sets for tracking incident types, and the scanner for user input.
+     * Constructor for the DispatchSystem class. Initializes the district queues, sets for tracking incident types, and the scanner for user input.
      */
     public DispatchSystem(){
-        this.incidentQueue = new ArrayDeque<>();
+        this.districtQueues = new HashMap<>();
+        this.districtQueues.put("central", new ArrayDeque<>());
+        this.districtQueues.put("south", new ArrayDeque<>());
+        this.districtQueues.put("east", new ArrayDeque<>());
         this.todayIncidentTypes = new HashSet<>();
         this.yesterdayIncidentTypes = new HashSet<>();
         this.scanner = new Scanner(System.in);
@@ -126,12 +125,13 @@ public class DispatchSystem {
             }
         }
 
+        districtQueues.putIfAbsent(district, new ArrayDeque<>());
         Incident newIncident = new Incident(type, district, priority);
         if(priority == 0){
-            incidentQueue.addLast(newIncident);
+            districtQueues.get(district).addLast(newIncident);
             System.out.println("Normal priority incident added to the end of the queue.");
         } else {
-            incidentQueue.addFirst(newIncident);
+            districtQueues.get(district).addFirst(newIncident);
             System.out.println("High priority incident added to the start of the queue.");
         }
         todayIncidentTypes.add(type);
@@ -144,13 +144,22 @@ public class DispatchSystem {
      */
     private void viewIncidents(){
         System.out.println("\n--- Current Incidents in Queue ---");
-        if(incidentQueue.isEmpty()){
-            System.out.println("No incidents in the queue.");
-            return;
-        } else {
-            for(Incident incident : incidentQueue){
-                System.out.println(incident.toString());
+        boolean empty = true;
+        for(Map.Entry<String, Deque<Incident>> entry : districtQueues.entrySet()){
+            String district = entry.getKey();
+            Deque<Incident> queue = entry.getValue();
+            if(queue.isEmpty()){
+                System.out.println("No incidents in the " + district + " queue.");
+            } else {
+                empty = false;
+                System.out.println("Incidents in " + district + " queue:");
+                for(Incident incident : queue){
+                    System.out.println(incident.toString());
+                }
             }
+        }
+        if(empty){
+            System.out.println("No incidents in any queue.");
         }
     }
 
@@ -160,12 +169,15 @@ public class DispatchSystem {
      */
     private void dispatchIncident(){
         System.out.println("\n--- Dispatching Next Incident ---");
-        if(incidentQueue.isEmpty()){
-            System.out.println("No incidents to dispatch.");
-            return;
+        System.out.print("Enter district to dispatch from (e.g. central, south, east): ");
+        String district = scanner.nextLine().toLowerCase().trim();
+        Deque<Incident> queue = districtQueues.get(district);
+        if(queue == null || queue.isEmpty()){
+            System.out.println("No incidents to dispatch in the " + district + " district.");
         } else {
-            Incident dispatechedIncident = incidentQueue.pollFirst();
-            System.out.println("Dispatched: " + dispatechedIncident.toString() + " to emergency services.");
+            Incident incidentToDispatch = queue.pollFirst();
+            System.out.println("Dispatching incident: " + incidentToDispatch.toString());
+            incidentLog.add(incidentToDispatch);
         }
     }
 
@@ -192,22 +204,20 @@ public class DispatchSystem {
      */
     private void searchIncidents(){
         System.out.println("\n--- Search Incidents ---");
-        if(incidentQueue.isEmpty()){
-            System.out.println("No incidents in the queue to search.");
-            return;
-        } else{
-            System.out.print("Enter search term (type or district): ");
-            String searchTerm = scanner.nextLine().toLowerCase().trim();
-            boolean found = false;
-            for(Incident incident : incidentQueue){
+        System.out.print("Enter search term (type or district): ");
+        String searchTerm = scanner.nextLine().toLowerCase().trim();
+        boolean found = false;
+        for(Map.Entry<String, Deque<Incident>> entry : districtQueues.entrySet()){
+            Deque<Incident> queue = entry.getValue();
+            for(Incident incident : queue){
                 if(incident.getType().contains(searchTerm) || incident.getDistrict().contains(searchTerm)){
                     System.out.println(incident.toString());
                     found = true;
                 }
             }
-            if(!found){
-                System.out.println("No incidents found matching the search term: " + searchTerm);
-            }
+        }
+        if(!found){
+            System.out.println("No incidents found matching the search term: " + searchTerm);
         }
     }
 
@@ -244,7 +254,7 @@ public class DispatchSystem {
      */
     private void saveState(){
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("dispatch_data.dat"))){
-            oos.writeObject(incidentQueue);
+            oos.writeObject(districtQueues);
             oos.writeObject(todayIncidentTypes);
             oos.writeObject(yesterdayIncidentTypes);
             oos.writeObject(incidentLog);
@@ -262,7 +272,7 @@ public class DispatchSystem {
     @SuppressWarnings("unchecked")
     private void loadState(){
         try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("dispatch_data.dat"))){
-            incidentQueue = (Deque<Incident>) ois.readObject();
+            districtQueues = (Map<String, Deque<Incident>>) ois.readObject();
             todayIncidentTypes = (Set<String>) ois.readObject();
             yesterdayIncidentTypes = (Set<String>) ois.readObject();
             incidentLog = (SystemLog<Incident>) ois.readObject();
