@@ -28,7 +28,11 @@ public class SystemLog<T> {
         logItems.add(item);
     }
 
-
+    /**
+     * Retrieves the list of log entries.
+     *
+     * @return A list of log entries.
+     */
     public void display(){
         if(logItems.isEmpty()){
             System.out.println("No log entries found.");
