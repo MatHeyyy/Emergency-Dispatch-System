@@ -27,4 +27,16 @@ public class SystemLog<T> {
     public void add(T item) {
         logItems.add(item);
     }
+
+
+    public void display(){
+        if(logItems.isEmpty()){
+            System.out.println("No log entries found.");
+        } else {
+            System.out.println("\n--- System Log ---");
+            for (T item : logItems) {
+                System.out.println("- " + item.toString());
+            }
+        }
+    }
 }
