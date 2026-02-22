@@ -1,6 +1,8 @@
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 /**
@@ -90,8 +92,11 @@ public class Incident implements Serializable {
     @Override
     public String toString(){
         String priorityLevel = (priority == 1) ? "High" : "Normal";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                .withZone(ZoneId.of("GMT"));
+        String formattedTime = formatter.format(timeRecorded);
         return String.format("[ID: %s | Time: %s | Wait: %ds | Type: %s, District: %s, Priority: %s]",
-                id.toString().substring(0, 8), timeRecorded.toString(), getWaitTimeInSeconds(),
+                id.toString().substring(0, 8), formattedTime, getWaitTimeInSeconds(),
                 type, district, priorityLevel);
     }
 }

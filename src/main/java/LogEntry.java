@@ -1,5 +1,7 @@
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * This class represents a single entry in the system log, wrapping an incident with action information.
@@ -76,6 +78,9 @@ public class LogEntry<T> implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format("[%s] %s (at %s)", action.getLabel(), item.toString(), timestamp.toString());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                .withZone(ZoneId.of("GMT"));
+        String formattedTime = formatter.format(timestamp);
+        return String.format("[%s] %s (at %s)", action.getLabel(), item.toString(), formattedTime);
     }
 }
