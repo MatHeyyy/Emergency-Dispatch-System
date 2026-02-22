@@ -135,7 +135,7 @@ public class DispatchSystem {
             System.out.println("High priority incident added to the start of the queue.");
         }
         todayIncidentTypes.add(type);
-        incidentLog.add(newIncident);
+        incidentLog.add(newIncident, LogEntry.Action.ADDED);
     }
 
     /**
@@ -175,7 +175,7 @@ public class DispatchSystem {
         } else {
             Incident incidentToDispatch = queue.pollFirst();
             System.out.println("Dispatching incident: " + incidentToDispatch.toString());
-            incidentLog.add(incidentToDispatch);
+            incidentLog.add(incidentToDispatch, LogEntry.Action.DISPATCHED);
         }
     }
 

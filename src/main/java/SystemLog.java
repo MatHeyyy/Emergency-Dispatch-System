@@ -4,14 +4,14 @@ import java.util.List;
 
 /**
  * This class is responsible for logging all incidents and dispatches in the system.
- * It maintains a list of log entries and provides methods to add new entries and retrieve the log history.
+ * It maintains a list of log entries with action information and provides methods to add new entries and retrieve the log history.
  *
- * @param <T> The type of log entries to be stored in the system log.
+ * @param <T> The type of items to be stored in the system log.
  * @author Matei Costinescu
  * @version 1.0
  */
 public class SystemLog<T> implements Serializable {
-    private List<T> logItems;
+    private List<LogEntry<T>> logItems;
 
     /**
      * Constructor for the SystemLog class. Initializes the logItems list.
@@ -21,26 +21,25 @@ public class SystemLog<T> implements Serializable {
     }
 
     /**
-     * Adds a new entry to the system log.
+     * Adds a new entry to the system log with an action type.
      *
-     * @param item The item to be added to the log.
+     * @param item The item to be logged.
+     * @param action The action performed on the item (ADDED or DISPATCHED).
      */
-    public void add(T item) {
-        logItems.add(item);
+    public void add(T item, LogEntry.Action action) {
+        logItems.add(new LogEntry<>(item, action));
     }
 
     /**
-     * Retrieves the list of log entries.
-     *
-     * @return A list of log entries.
+     * Displays all log entries in the system log.
      */
     public void display(){
         if(logItems.isEmpty()){
             System.out.println("No log entries found.");
         } else {
             System.out.println("\n--- System Log ---");
-            for (T item : logItems) {
-                System.out.println("- " + item.toString());
+            for (LogEntry<T> entry : logItems) {
+                System.out.println("- " + entry.toString());
             }
         }
     }
