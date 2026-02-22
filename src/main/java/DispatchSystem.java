@@ -144,22 +144,20 @@ public class DispatchSystem {
      */
     private void viewIncidents(){
         System.out.println("\n--- Current Incidents in Queue ---");
-        boolean empty = true;
+        boolean allEmpty = districtQueues.values().stream().allMatch(Deque::isEmpty);
+        if(allEmpty){
+            System.out.println("No incidents in any queue.");
+            return;
+        }
         for(Map.Entry<String, Deque<Incident>> entry : districtQueues.entrySet()){
             String district = entry.getKey();
             Deque<Incident> queue = entry.getValue();
-            if(queue.isEmpty()){
-                System.out.println("No incidents in the " + district + " queue.");
-            } else {
-                empty = false;
+            if(!queue.isEmpty()){
                 System.out.println("Incidents in " + district + " queue:");
                 for(Incident incident : queue){
-                    System.out.println(incident.toString());
+                    System.out.println(incident);
                 }
             }
-        }
-        if(empty){
-            System.out.println("No incidents in any queue.");
         }
     }
 
